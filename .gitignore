@@ -1,0 +1,11 @@
+build/
+**.png
+**.jpg
+**.json
+maskrcnn_benchmark.egg-info/
+**.so
+**.pkl
+**.pyc
+**.swp
+.idea/
+__pycache__/
