@@ -7,5 +7,7 @@ maskrcnn_benchmark.egg-info/
 **.pkl
 **.pyc
 **.swp
+**.txt
 .idea/
 __pycache__/
+
