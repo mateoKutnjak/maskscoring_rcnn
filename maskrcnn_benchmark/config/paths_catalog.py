@@ -7,18 +7,13 @@ import os
 class DatasetCatalog(object):
     DATA_DIR = "datasets"
     DATASETS = {
-        "coco_2014_train": (
-            "coco/train2014",
-            "coco/annotations/instances_train2014.json",
+        "coco_custom_dataset_train": (
+            "coco/images_train",
+            "coco/annotations/train.json"
         ),
-        "coco_2014_val": ("coco/val2014", "coco/annotations/instances_val2014.json"),
-        "coco_2014_minival": (
-            "coco/val2014",
-            "coco/annotations/instances_minival2014.json",
-        ),
-        "coco_2014_valminusminival": (
-            "coco/val2014",
-            "coco/annotations/instances_valminusminival2014.json",
+        "coco_custom_dataset_valid": (
+            "coco/images_valid",
+            "coco/annotations/valid.json"
         ),
     }
 

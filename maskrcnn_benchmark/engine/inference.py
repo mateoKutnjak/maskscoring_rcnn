@@ -106,7 +106,7 @@ def prepare_for_coco_segmentation(predictions, dataset, maskiou_on):
         # rles = prediction.get_field('mask')
 
         rles = [
-            mask_util.encode(np.array(mask[0, :, :, np.newaxis], order="F"))[0]
+            mask_util.encode(np.array(mask[0, :, :, np.newaxis], dtype=np.uint8, order="F"))[0]
             for mask in masks
         ]
         for rle in rles:

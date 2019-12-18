@@ -31,8 +31,8 @@ MODEL:
   MASK_ON: True
   MASKIOU_ON: True
 DATASETS:
-  TRAIN: ("coco_2014_train", "coco_2014_valminusminival")  
-  TEST: ("coco_2014_minival",)
+  TRAIN: ("coco_custom_dataset_train",)
+  TEST: ("coco_custom_dataset_valid",)
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 SOLVER:
