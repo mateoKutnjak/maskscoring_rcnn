@@ -368,8 +368,8 @@ def inference(
     # convert to a torch.device for efficiency
     device = torch.device(device)
     num_devices = (
-        torch.distributed.deprecated.get_world_size()
-        if torch.distributed.deprecated.is_initialized()
+        torch.distributed.get_world_size()
+        if torch.distributed.is_initialized()
         else 1
     )
     logger = logging.getLogger("maskrcnn_benchmark.inference")
@@ -378,6 +378,7 @@ def inference(
     start_time = time.time()
     predictions = compute_on_dataset(model, data_loader, device)
     # wait for all processes to complete before measuring the time
+
     synchronize()
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=total_time))

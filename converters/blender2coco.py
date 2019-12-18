@@ -215,5 +215,5 @@ if __name__ == '__main__':
     print('Writing to files...')
     with open(os.path.join(annotations_dir, 'train.json'), 'w') as train_json:
         json.dump(train_annotations, train_json)
-    with open(os.path.join(annotations_dir, 'valid.json'), 'w') as train_json:
-        json.dump(train_annotations, train_json)
+    with open(os.path.join(annotations_dir, 'valid.json'), 'w') as valid_json:
+        json.dump(valid_annotations, valid_json)

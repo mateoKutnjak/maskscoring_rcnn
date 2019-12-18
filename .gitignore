@@ -9,6 +9,8 @@ maskrcnn_benchmark.egg-info/
 **.swp
 **.txt
 **.egg
+**.pth
+**last_checkpoint
 .idea/
 __pycache__/
 

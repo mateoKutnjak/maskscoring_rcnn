@@ -76,7 +76,7 @@ def main():
             output_folders[idx] = output_folder
     data_loaders_val = make_data_loader(cfg, is_train=False, is_distributed=distributed)
     for output_folder, data_loader_val in zip(output_folders, data_loaders_val):
-        inference(
+        output = inference(
             model,
             data_loader_val,
             iou_types=iou_types,
@@ -87,6 +87,16 @@ def main():
             output_folder=output_folder,
             maskiou_on=cfg.MODEL.MASKIOU_ON
         )
+        import cv2
+        from demo.predictor import COCODemo
+        ppp = COCODemo(cfg)
+
+        image = cv2.imread('/root/maskscoring_rcnn/datasets/coco/images_valid/COCO_valid2019_valve-0000000103.png')
+        result = ppp.run_on_opencv_image(image)
+
+        import pdb
+        pdb.set_trace()
+
         synchronize()
 
 
