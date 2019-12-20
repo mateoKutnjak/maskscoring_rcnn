@@ -17,6 +17,8 @@ from maskrcnn_benchmark.utils.comm import synchronize, get_rank
 from maskrcnn_benchmark.utils.logger import setup_logger
 from maskrcnn_benchmark.utils.miscellaneous import mkdir
 
+import util
+
 
 def main():
     parser = argparse.ArgumentParser(description="PyTorch Object Detection Inference")
@@ -87,12 +89,11 @@ def main():
             output_folder=output_folder,
             maskiou_on=cfg.MODEL.MASKIOU_ON
         )
-        import cv2
-        from demo.predictor import COCODemo
-        ppp = COCODemo(cfg)
 
-        image = cv2.imread('/root/maskscoring_rcnn/datasets/coco/images_valid/COCO_valid2019_valve-0000000114.png')
-        result = ppp.run_on_opencv_image(image)
+        from demo.predictor import COCODemo
+        predictor = COCODemo(cfg)
+
+        # util.plot_inference_for_image(predictor, image_path)
 
         import pdb
         pdb.set_trace()

@@ -2,10 +2,18 @@
 """Centralized catalog of paths."""
 
 import os
+from polyaxon_client.tracking import get_data_paths
 
 
 class DatasetCatalog(object):
     DATA_DIR = "datasets"
+
+    polyaxon_data_path = ''
+    try:
+        polyaxon_data_path = get_data_paths()
+    except:
+        pass
+
     DATASETS = {
         "coco_custom_dataset_train": (
             "coco/images_train",
@@ -14,6 +22,14 @@ class DatasetCatalog(object):
         "coco_custom_dataset_valid": (
             "coco/images_valid",
             "coco/annotations/valid.json"
+        ),
+        "coco_custom_dataset_train_polyaxon": (
+            polyaxon_data_path + "/msrcnn/images_train",
+            polyaxon_data_path + "/msrcnn/annotations/train.json"
+        ),
+        "coco_custom_dataset_valid_polyaxon": (
+            polyaxon_data_path + "/msrcnn/images_valid",
+            polyaxon_data_path + "/msrcnn/annotations/valid.json"
         ),
     }
 
