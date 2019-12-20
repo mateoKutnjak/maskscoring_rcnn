@@ -27,8 +27,7 @@ build:
 
 run:
   cmd:
-    - ls -la
-    - ls -la configs
+    - git pull origin master
     - source entrypoint.sh
     - python3 -W ignore tools/train_net_polyaxon.py \
       --config {{config}} \
