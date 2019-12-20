@@ -36,64 +36,50 @@ treated as separate object with unique ID == len(objects)+1.
 """
 def polygon_format(args, mask, category_name, annotate_holes):
     contours = measure.find_contours(mask, 0.5)
-
     segmentation_list = []
 
-    for i in range(len(contours)):
-        _contour = np.expand_dims(contours[i].astype(np.float32), 1)
-        _contour = cv2.UMat(_contour)
-
-        area = cv2.contourArea(_contour)
-
-        contours[i] = (contours[i], area)
-
-    # First contour is largest. If object has hole,
-    # first contour is object, the rest are holes.
-    contours = sorted(contours, key=lambda x: x[1], reverse=True)
-
-    for contour, area in contours:
+    for contour in contours:
         contour = np.flip(contour, axis=1)
         segmentation = contour.ravel().tolist()
         segmentation_list.append(segmentation)
 
-        if not annotate_holes:
-            return segmentation_list
-
-    # plot_polygon(mask, segmentation_list[1:])
-
-    assert len(segmentation_list) > 1
-    return segmentation_list[1:]
+    return segmentation_list
 
 
-# def binary_mask_to_rle(binary_mask):
-#     contours, _ = cv2.findContours(binary_mask.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-#     ordered_contours = []
-#
-#     if category_name in ['valve']:
-#
-#         print('contours num = {}'.format(len(contours)))
-#
-#         for contour in contours:
-#             area = cv2.contourArea(contour)
-#             ordered_contours.append((contour, area))
-#
-#         ordered_contours = sorted(ordered_contours, key=lambda x: x[1])
-#
-#         cv2.fillPoly(binary_mask, np.array([ordered_contours[0][0]], dtype=np.int32), color=(6))
-#         cv2.fillPoly(binary_mask, np.array([ordered_contours[1][0]], dtype=np.int32), color=(6))
-#         cv2.fillPoly(binary_mask, np.array([ordered_contours[2][0]], dtype=np.int32), color=(6))
-#
-#         # import matplotlib.pyplot as plt
-#         # plt.imshow(binary_mask)
-#         # plt.show()
-#
-#     rle = {'counts': [], 'size': list(binary_mask.shape)}
-#     counts = rle.get('counts')
-#     for i, (value, elements) in enumerate(groupby(binary_mask.ravel(order='F'))):
-#         if i == 0 and value == 1:
-#             counts.append(0)
-#         counts.append(len(list(elements)))
-#     return rle
+def get_contours(mask, holes=False):
+    contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    ordered_contours = []
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        ordered_contours.append((contour, area))
+
+    # Descending ordering
+    ordered_contours = sorted(ordered_contours, key=lambda x: x[1], reverse=True)
+
+    return ordered_contours[1:] if holes else [ordered_contours[0]]
+
+
+def filter_mask(mask, category_id):
+    if category_id not in [1, HOLE_CATEGORY_ID]:
+        return mask
+
+    ordered_contours = get_contours(mask, holes=category_id == HOLE_CATEGORY_ID)
+
+    mask.fill(0)
+    for contour, area in ordered_contours:
+        cv2.fillPoly(mask, np.array([contour], dtype=np.int32), color=category_id)
+
+    return mask
+
+
+def fill_holes(mask):
+    ordered_contours = get_contours(mask)
+
+    mask.fill(0)
+    cv2.fillPoly(mask, np.array([ordered_contours[0][0]], dtype=np.int32), color=HOLE_CATEGORY_ID)
+
+    return mask
 
 
 def create_example_annotation(args, id, subset, annotations, filename,
@@ -115,6 +101,8 @@ def create_example_annotation(args, id, subset, annotations, filename,
     )
 
     mask = imageio.imread(os.path.join(args.src, category_name, 'mask', filename))
+    mask = filter_mask(mask, HOLE_CATEGORY_ID if annotate_holes else category_id)
+
     rle_mask = pycocotools.mask.encode(np.asfortranarray(mask.astype(np.uint8)))
 
     annotations['annotations'].append({
@@ -127,6 +115,8 @@ def create_example_annotation(args, id, subset, annotations, filename,
     })
 
     annotations['annotations'][-1]['segmentation'] = polygon_format(args, mask, category_name, annotate_holes)
+
+    # plot_polygon(mask, polygons=annotations['annotations'][-1]['segmentation'])
 
 
 if __name__ == '__main__':

@@ -91,7 +91,7 @@ def main():
         from demo.predictor import COCODemo
         ppp = COCODemo(cfg)
 
-        image = cv2.imread('/root/maskscoring_rcnn/datasets/coco/images_valid/COCO_valid2019_valve-0000000103.png')
+        image = cv2.imread('/root/maskscoring_rcnn/datasets/coco/images_valid/COCO_valid2019_valve-0000000114.png')
         result = ppp.run_on_opencv_image(image)
 
         import pdb
