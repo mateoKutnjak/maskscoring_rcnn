@@ -95,9 +95,6 @@ def main():
 
         # util.plot_inference_for_image(predictor, image_path)
 
-        import pdb
-        pdb.set_trace()
-
         synchronize()
 
 

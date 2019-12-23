@@ -114,9 +114,6 @@ def do_train(
                 )
             )
 
-            import pdb
-            pdb.set_trace()
-
             if experiment is not None:
                 experiment.log_metrics(step=iteration,
                                        loss_objectness=loss_dict_reduced['loss_objectness'].item(),
