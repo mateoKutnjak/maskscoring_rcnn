@@ -28,7 +28,7 @@ from maskrcnn_benchmark.utils.miscellaneous import mkdir
 from polyaxon_client.tracking import Experiment, get_data_paths, get_outputs_path
 
 
-def train(cfg, local_rank, distributed):
+def train(cfg, local_rank, distributed, experiment):
     model = build_detection_model(cfg)
     device = torch.device(cfg.MODEL.DEVICE)
     model.to(device)
@@ -74,12 +74,15 @@ def train(cfg, local_rank, distributed):
         device,
         checkpoint_period,
         arguments,
+        experiment=experiment,
+        cfg=cfg,
+        distributed=distributed
     )
 
     return model
 
 
-def test(cfg, model, distributed):
+def test(cfg, model, distributed, experiment, epoch):
     if distributed:
         model = model.module
     torch.cuda.empty_cache()  # TODO check if it helps
@@ -95,7 +98,7 @@ def test(cfg, model, distributed):
             output_folders[idx] = output_folder
     data_loaders_val = make_data_loader(cfg, is_train=False, is_distributed=distributed)
     for output_folder, data_loader_val in zip(output_folders, data_loaders_val):
-        inference(
+        output = inference(
             model,
             data_loader_val,
             iou_types=iou_types,
@@ -106,6 +109,22 @@ def test(cfg, model, distributed):
             output_folder=output_folder,
             maskiou_on=cfg.MODEL.MASKIOU_ON
         )
+
+        if experiment is not None:
+            experiment.log_metrics(step=epoch,
+                                   bbox_AP=output[0].results['bbox']['AP'],
+                                   bbox_AP50=output[0].results['bbox']['AP50'],
+                                   bbox_AP75=output[0].results['bbox']['AP75'],
+                                   bbox_APs=output[0].results['bbox']['APs'],
+                                   bbox_APm=output[0].results['bbox']['APm'],
+                                   bbox_APl=output[0].results['bbox']['APl'],
+                                   segm_AP=output[0].results['segm']['AP'],
+                                   segm_AP50=output[0].results['segm']['AP50'],
+                                   segm_AP75=output[0].results['segm']['AP75'],
+                                   segm_APs=output[0].results['segm']['APs'],
+                                   segm_APm=output[0].results['segm']['APm'],
+                                   segm_APl=output[0].results['segm']['APl'])
+
         synchronize()
 
 
@@ -164,10 +183,12 @@ def main():
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
 
-    model = train(cfg, args.local_rank, args.distributed)
+    experiment = Experiment()
+
+    model = train(cfg, args.local_rank, args.distributed, experiment=experiment)
 
     if not args.skip_test:
-        test(cfg, model, args.distributed)
+        test(cfg, model, args.distributed, experiment=experiment, epoch=None)
 
 
 if __name__ == "__main__":

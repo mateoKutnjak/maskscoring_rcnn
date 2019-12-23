@@ -31,7 +31,9 @@ build:
 
 run:
   cmd:
-    - git pull origin master
+    - ls -la /root
+    - ls -la /root/maskscoring_rcnn
+    - ls -la /root/maskscoring_rcnn/configs
     - source entrypoint.sh
     - python3 -W ignore tools/train_net_polyaxon.py \
       --config {{config}} \

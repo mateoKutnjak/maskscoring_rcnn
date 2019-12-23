@@ -25,10 +25,8 @@ from maskrcnn_benchmark.utils.imports import import_file
 from maskrcnn_benchmark.utils.logger import setup_logger
 from maskrcnn_benchmark.utils.miscellaneous import mkdir
 
-from polyaxon_client.tracking import Experiment
 
-
-def train(cfg, local_rank, distributed, experiment):
+def train(cfg, local_rank, distributed):
     model = build_detection_model(cfg)
     device = torch.device(cfg.MODEL.DEVICE)
     model.to(device)
@@ -73,7 +71,7 @@ def train(cfg, local_rank, distributed, experiment):
         device,
         checkpoint_period,
         arguments,
-        experiment=experiment,
+        experiment=None,
         cfg=cfg,
         distributed=distributed
     )
@@ -182,12 +180,10 @@ def main():
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
 
-    experiment = Experiment()
-
-    model = train(cfg, args.local_rank, args.distributed, experiment=experiment)
+    model = train(cfg, args.local_rank, args.distributed, experiment=None)
 
     if not args.skip_test:
-        test(cfg, model, args.distributed, experiment=experiment)
+        test(cfg, model, args.distributed, experiment=None)
 
 
 if __name__ == "__main__":
