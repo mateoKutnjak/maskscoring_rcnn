@@ -76,7 +76,8 @@ def train(cfg, local_rank, distributed, experiment):
         arguments,
         experiment=experiment,
         cfg=cfg,
-        distributed=distributed
+        distributed=distributed,
+        test_func=test
     )
 
     return model

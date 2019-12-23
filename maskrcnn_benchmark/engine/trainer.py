@@ -11,7 +11,6 @@ from maskrcnn_benchmark.utils.metric_logger import MetricLogger
 
 import util
 from polyaxon_client.tracking import Experiment
-from tools.train_net_polyaxon import test
 
 
 def reduce_loss_dict(loss_dict):
@@ -50,7 +49,8 @@ def do_train(
     arguments,
     experiment,
     cfg,
-    distributed
+    distributed,
+    test_func
 ):
     logger = logging.getLogger("maskrcnn_benchmark.trainer")
     logger.info("Start training")
