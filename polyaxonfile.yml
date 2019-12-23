@@ -31,6 +31,7 @@ build:
 
 run:
   cmd:
+    - git pull origin master
     - ls -la /root
     - ls -la /root/maskscoring_rcnn
     - ls -la /root/maskscoring_rcnn/configs
