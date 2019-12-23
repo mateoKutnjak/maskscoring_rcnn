@@ -125,7 +125,7 @@ def do_train(
 
         if iteration % checkpoint_period == 0:
             test_func(cfg, model, distributed, experiment=experiment, epoch=iteration / checkpoint_period)
-            checkpointer.save("model_{:07d}".format(iteration), **arguments)
+            # checkpointer.save("model_{:07d}".format(iteration), **arguments)
 
     checkpointer.save("model_{:07d}".format(iteration), **arguments)
     total_training_time = time.time() - start_training_time
