@@ -81,7 +81,13 @@ def do_train(
 
         # reduce losses over all GPUs for logging purposes
         loss_dict_reduced = reduce_loss_dict(loss_dict)
-        losses_reduced = sum(loss for loss in loss_dict_reduced.values())
+
+        print(loss_dict_reduced)
+
+        if isinstance(loss_dict_reduced, dict):
+            losses_reduced = sum(loss for loss in loss_dict_reduced.values())
+        elif isinstance(loss_dict_reduced, list):
+            pass
         meters.update(loss=losses_reduced, **loss_dict_reduced)
 
         optimizer.zero_grad()
