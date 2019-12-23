@@ -77,7 +77,7 @@ def train(cfg, local_rank, distributed, experiment, checkpoint_period):
         experiment=experiment,
         cfg=cfg,
         distributed=distributed,
-        test_func=test()
+        test_func=test
     )
 
     return model
