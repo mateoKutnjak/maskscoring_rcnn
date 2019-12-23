@@ -77,7 +77,7 @@ def train(cfg, local_rank, distributed, experiment):
         experiment=experiment,
         cfg=cfg,
         distributed=distributed,
-        test_func=test
+        test_func=test()
     )
 
     return model
@@ -151,6 +151,11 @@ def main():
         default=None,
         nargs=argparse.REMAINDER,
     )
+    parser.add_argument(
+        "--checkpoint-period",
+        default=2000,
+        type=int
+    )
 
     args = parser.parse_args()
 
@@ -185,6 +190,8 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     experiment = Experiment()
+
+    cfg.SOLVER.CHECKPOINT_PERIOD = args.checkpoint_period
 
     model = train(cfg, args.local_rank, args.distributed, experiment=experiment)
 
