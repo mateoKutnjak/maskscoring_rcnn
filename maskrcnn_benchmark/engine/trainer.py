@@ -10,6 +10,8 @@ from maskrcnn_benchmark.utils.comm import get_world_size
 from maskrcnn_benchmark.utils.metric_logger import MetricLogger
 
 import util
+from polyaxon_client.tracking import Experiment
+from tools.train_net import test
 
 
 def reduce_loss_dict(loss_dict):
@@ -46,6 +48,9 @@ def do_train(
     device,
     checkpoint_period,
     arguments,
+    experiment,
+    cfg,
+    distributed
 ):
     logger = logging.getLogger("maskrcnn_benchmark.trainer")
     logger.info("Start training")
@@ -55,6 +60,7 @@ def do_train(
     model.train()
     start_training_time = time.time()
     end = time.time()
+
     for iteration, (images, targets, _) in enumerate(data_loader, start_iter):
         data_time = time.time() - end
         iteration = iteration + 1
@@ -107,7 +113,21 @@ def do_train(
                     memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
                 )
             )
+
+            import pdb
+            pdb.set_trace()
+
+            if experiment is not None:
+                experiment.log_metrics(step=iteration,
+                                       loss_objectness=loss_dict_reduced['loss_objectness'].item(),
+                                       loss_mask=loss_dict_reduced['loss_mask'].item(),
+                                       loss_classifier=loss_dict_reduced['loss_classifier'].item(),
+                                       loss_rpn_box_reg=loss_dict_reduced['loss_rpn_box_reg'].item(),
+                                       loss_box_reg=loss_dict_reduced['loss_box_reg'].item(),
+                                       loss=losses_reduced.item())
+
         if iteration % checkpoint_period == 0:
+            test(cfg, model, distributed, experiment=experiment, epoch=iteration / checkpoint_period)
             checkpointer.save("model_{:07d}".format(iteration), **arguments)
 
     checkpointer.save("model_{:07d}".format(iteration), **arguments)

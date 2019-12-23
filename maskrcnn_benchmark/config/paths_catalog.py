@@ -11,7 +11,7 @@ class DatasetCatalog(object):
     polyaxon_data_path = ''
     try:
         polyaxon_data_path = get_data_paths()['data1']
-        print(polyaxon_data_path)
+        print("=======================" + str(polyaxon_data_path))
     except:
         pass
 

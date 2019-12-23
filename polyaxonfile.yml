@@ -15,6 +15,10 @@ inputs:
     is_optional: true
     default: 8
     type: int
+  - name: lr
+    is_optional: true
+    default: 0.02
+    type: float
 
 environment:
   resources:
@@ -31,5 +35,6 @@ run:
     - source entrypoint.sh
     - python3 -W ignore tools/train_net_polyaxon.py \
       --config {{config}} \
+      SOLVER.BASE_LR {{lr}} \
       SOLVER.IMS_PER_BATCH {{batch_size_train}} \
       TEST.IMS_PER_BATCH {{batch_size_test}}
