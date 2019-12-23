@@ -28,7 +28,7 @@ from maskrcnn_benchmark.utils.miscellaneous import mkdir
 from polyaxon_client.tracking import Experiment, get_data_paths, get_outputs_path
 
 
-def train(cfg, local_rank, distributed, experiment):
+def train(cfg, local_rank, distributed, experiment, checkpoint_period):
     model = build_detection_model(cfg)
     device = torch.device(cfg.MODEL.DEVICE)
     model.to(device)
@@ -63,7 +63,7 @@ def train(cfg, local_rank, distributed, experiment):
         start_iter=arguments["iteration"],
     )
 
-    checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
+    # checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
 
     do_train(
         model,
@@ -191,9 +191,7 @@ def main():
 
     experiment = Experiment()
 
-    cfg.SOLVER.CHECKPOINT_PERIOD = args.checkpoint_period
-
-    model = train(cfg, args.local_rank, args.distributed, experiment=experiment)
+    model = train(cfg, args.local_rank, args.distributed, experiment=experiment, checkpoint_period=args.checkpoint_period)
 
     if not args.skip_test:
         test(cfg, model, args.distributed, experiment=experiment, epoch=None)
