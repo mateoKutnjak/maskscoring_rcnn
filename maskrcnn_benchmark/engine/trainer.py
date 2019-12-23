@@ -124,7 +124,7 @@ def do_train(
                                        loss=losses_reduced.item())
 
         if iteration % checkpoint_period == 0:
-            test(cfg, model, distributed, experiment=experiment, epoch=iteration / checkpoint_period)
+            test_func(cfg, model, distributed, experiment=experiment, epoch=iteration / checkpoint_period)
             checkpointer.save("model_{:07d}".format(iteration), **arguments)
 
     checkpointer.save("model_{:07d}".format(iteration), **arguments)
