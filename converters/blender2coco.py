@@ -116,7 +116,10 @@ def create_example_annotation(args, id, subset, annotations, filename,
 
     annotations['annotations'][-1]['segmentation'] = polygon_format(args, mask, category_name, annotate_holes)
 
-    # plot_polygon(mask, polygons=annotations['annotations'][-1]['segmentation'])
+    # if annotations['annotations'][-1]['segmentation'].__len__() not in [1, 3]:
+    #     import pdb
+    #     pdb.set_trace()
+    #     plot_polygon(mask, polygons=annotations['annotations'][-1]['segmentation'])
 
 
 if __name__ == '__main__':

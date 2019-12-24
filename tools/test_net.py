@@ -93,7 +93,10 @@ def main():
         from demo.predictor import COCODemo
         predictor = COCODemo(cfg)
 
-        # util.plot_inference_for_image(predictor, image_path)
+        # util.plot_inference_for_image(predictor, '/root/maskscoring_rcnn/datasets/coco/images_valid/COCO_valid2019_valve-0000000201.png')
+
+        import pdb
+        pdb.set_trace()
 
         synchronize()
 

@@ -81,13 +81,7 @@ def do_train(
 
         # reduce losses over all GPUs for logging purposes
         loss_dict_reduced = reduce_loss_dict(loss_dict)
-
-        print(loss_dict_reduced)
-
-        if isinstance(loss_dict_reduced, dict):
-            losses_reduced = sum(loss for loss in loss_dict_reduced.values())
-        elif isinstance(loss_dict_reduced, list):
-            pass
+        losses_reduced = sum(loss for loss in loss_dict_reduced.values())
         meters.update(loss=losses_reduced, **loss_dict_reduced)
 
         optimizer.zero_grad()
@@ -130,10 +124,10 @@ def do_train(
                                        loss=losses_reduced.item())
 
         if iteration % checkpoint_period == 0:
-            # test_func(cfg, model, distributed, experiment=experiment, epoch=iteration / checkpoint_period)
             checkpointer.save("model_{:07d}".format(iteration), **arguments)
+            #test_func(cfg, model, distributed, experiment=experiment, epoch=iteration / checkpoint_period)
 
-    checkpointer.save("model_{:07d}".format(iteration), **arguments)
+    #checkpointer.save("model_{:07d}".format(iteration), **arguments)
     total_training_time = time.time() - start_training_time
     total_time_str = str(datetime.timedelta(seconds=total_training_time))
     logger.info(

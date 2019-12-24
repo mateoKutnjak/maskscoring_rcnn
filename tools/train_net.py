@@ -73,7 +73,8 @@ def train(cfg, local_rank, distributed):
         arguments,
         experiment=None,
         cfg=cfg,
-        distributed=distributed
+        distributed=distributed,
+        test_func=test
     )
 
     return model
@@ -180,10 +181,10 @@ def main():
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
 
-    model = train(cfg, args.local_rank, args.distributed, experiment=None)
+    model = train(cfg, args.local_rank, args.distributed)
 
     if not args.skip_test:
-        test(cfg, model, args.distributed, experiment=None)
+        test(cfg, model, args.distributed, experiment=None, epoch=9999)
 
 
 if __name__ == "__main__":
