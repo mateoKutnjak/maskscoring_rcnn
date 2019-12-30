@@ -46,7 +46,11 @@ RUN pip3 install \
 RUN pip3 install \
 	pycocotools
 
-WORKDIR /root
-RUN git clone https://github.com/mateoKutnjak/maskscoring_rcnn.git
+# WORKDIR /root
+# RUN git clone https://github.com/mateoKutnjak/maskscoring_rcnn.git
 
-WORKDIR /root/maskscoring_rcnn
+ADD ./* /code/
+
+ENV PYTHONPATH="/code:${PYTHONPATH}"
+
+WORKDIR /code

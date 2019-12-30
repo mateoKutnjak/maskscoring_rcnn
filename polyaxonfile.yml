@@ -5,7 +5,7 @@ kind: experiment
 inputs:
   - name: config
     is_optional: true
-    default: "/root/maskscoring_rcnn/configs/e2e_mask_rcnn_R_50_FPN_1x_polyaxon.yaml"
+    default: "configs/e2e_ms_rcnn_R_50_FPN_1x_polyaxon.yaml"
     type: str
   - name: batch_size_train
     is_optional: true
@@ -13,11 +13,11 @@ inputs:
     type: int
   - name: batch_size_test
     is_optional: true
-    default: 8
+    default: 1
     type: int
   - name: lr
     is_optional: true
-    default: 0.02
+    default: 0.01
     type: float
 
 environment:
@@ -31,10 +31,8 @@ build:
 
 run:
   cmd:
-    - git pull origin master
-    - ls -la /root
-    - ls -la /root/maskscoring_rcnn
-    - ls -la /root/maskscoring_rcnn/configs
+    - pwd
+    - ls -la
     - source entrypoint.sh
     - python3 -W ignore tools/train_net_polyaxon.py \
       --config {{config}} \
