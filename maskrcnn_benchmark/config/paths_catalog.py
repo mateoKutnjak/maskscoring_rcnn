@@ -25,11 +25,11 @@ class DatasetCatalog(object):
             "coco/annotations/valid.json"
         ),
         "coco_custom_dataset_train_polyaxon": (
-            polyaxon_data_path + "/msrcnn/images_train",
+            polyaxon_data_path + "/msrcnn/images",
             polyaxon_data_path + "/msrcnn/annotations/train.json"
         ),
         "coco_custom_dataset_valid_polyaxon": (
-            polyaxon_data_path + "/msrcnn/images_valid",
+            polyaxon_data_path + "/msrcnn/images",
             polyaxon_data_path + "/msrcnn/annotations/valid.json"
         ),
     }
