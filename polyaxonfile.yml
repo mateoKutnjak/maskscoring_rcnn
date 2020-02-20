@@ -9,7 +9,7 @@ inputs:
     type: str
   - name: batch_size_train
     is_optional: true
-    default: 8
+    default: 3
     type: int
   - name: batch_size_test
     is_optional: true
@@ -17,7 +17,7 @@ inputs:
     type: int
   - name: lr
     is_optional: true
-    default: 0.01
+    default: 0.001
     type: float
 
 environment:
