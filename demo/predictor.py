@@ -51,9 +51,7 @@ class COCODemo(object):
         "__background",
         "valve",
         "manometer",
-        'banana',
-        'battery',
-        'golfball',
+        'manometer_pointer',
         'hole'
     ]
 

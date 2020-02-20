@@ -17,11 +17,11 @@ class DatasetCatalog(object):
 
     DATASETS = {
         "coco_custom_dataset_train": (
-            "coco/images_train",
+            "coco/images",
             "coco/annotations/train.json"
         ),
         "coco_custom_dataset_valid": (
-            "coco/images_valid",
+            "coco/images",
             "coco/annotations/valid.json"
         ),
         "coco_custom_dataset_train_polyaxon": (
