@@ -41,6 +41,9 @@ def cache_url(url, model_dir=None, progress=True):
         # so make the full path the filename by replacing / with _
         filename = parts.path.replace("/", "_")
     cached_file = os.path.join(model_dir, filename)
+    # from polyaxon_client.tracking import get_data_paths
+    # cached_file = get_data_paths()['data1'] + '/msrcnn/R-101.pkl'
+
     if not os.path.exists(cached_file) and is_main_process():
         sys.stderr.write('Downloading: "{}" to {}\n'.format(url, cached_file))
         hash_prefix = HASH_REGEX.search(filename)

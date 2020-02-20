@@ -93,10 +93,11 @@ def main():
         from demo.predictor import COCODemo
         predictor = COCODemo(cfg)
 
-        # util.plot_inference_for_image(predictor, '/root/maskscoring_rcnn/datasets/coco/images_valid/COCO_valid2019_valve-0000000201.png')
-
-        import pdb
-        pdb.set_trace()
+        import random
+        while True:
+            c = 'manometer' if random.random() > 0.5 else 'valve'
+            i = random.randint(0, 700)
+            util.plot_inference_for_image(predictor, '/root/maskscoring_rcnn/datasets/coco/images/{}-000{}.png'.format(c, str(i).zfill(3)))
 
         synchronize()
 

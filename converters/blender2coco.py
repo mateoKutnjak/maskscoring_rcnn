@@ -94,18 +94,18 @@ def fill_holes(mask):
 
 def create_example_annotation(args, id, annotations, filename,
                               images_dir, category_name, category_id,
-                              annotate_holes=False, dir_index=None, rgb=None):
+                              annotate_holes=False, dir_index=None, rgb=None, classes=None):
 
     example_num = filename.split('.')[0]
 
-    annotations['images'].append({
-        'file_name': '{}-{}'.format(category_name, filename),
-        'height': args.img_height,
-        'width': args.img_width,
-        # Unnecessary doubling of image indices
-        'id': dir_index * 100000 + int(example_num) if not annotate_holes else HOLE_CATEGORY_ID * 100000 + int(example_num)
-
-    })
+    if classes.index(category_id) == 0:
+        annotations['images'].append({
+            'file_name': '{}-{}'.format(category_name, filename),
+            'height': args.img_height,
+            'width': args.img_width,
+            # Unnecessary doubling of image indices
+            'id': dir_index * 100000 + int(example_num) # if not annotate_holes else HOLE_CATEGORY_ID * 100000 + int(example_num)
+        })
 
     shutil.copy(
         os.path.join(args.src, category_name, 'rgb', filename),
@@ -113,14 +113,14 @@ def create_example_annotation(args, id, annotations, filename,
     )
 
     mask = imageio.imread(os.path.join(args.src, category_name, 'mask', filename))
-    mask = filter_mask(mask, HOLE_CATEGORY_ID if annotate_holes else category_id)
+    mask = filter_mask(mask, category_id)
 
     rle_mask = pycocotools.mask.encode(np.asfortranarray(mask.astype(np.uint8)))
 
     annotations['annotations'].append({
         'id': id,
-        'category_id': category_id if not annotate_holes else HOLE_CATEGORY_ID,
-        'image_id': dir_index * 100000 + int(example_num) if not annotate_holes else HOLE_CATEGORY_ID * 100000 + int(example_num),
+        'category_id': category_id,
+        'image_id': dir_index * 100000 + int(example_num), # if not annotate_holes else HOLE_CATEGORY_ID * 100000 + int(example_num),
         'iscrowd': 0,
         'bbox': pycocotools.mask.toBbox(rle_mask).tolist(),
         'area': pycocotools.mask.area(rle_mask).tolist()
@@ -210,18 +210,21 @@ if __name__ == '__main__':
                 if 0 in classes:
                     classes.remove(0)
 
+                if obj_dir in ['valve']:
+                    classes.append(HOLE_CATEGORY_ID)
+
                 for c in classes:
                     cntr += 1
 
                     create_example_annotation(opt, id=cntr, filename=filename, images_dir=images_dir,
                                               annotations=train_annotations if mode == 'train' else valid_annotations,
-                                              category_name=obj_dir, category_id=c, dir_index=obj_dir_ctr, rgb=rgb)
+                                              category_name=obj_dir, category_id=c, dir_index=obj_dir_ctr, rgb=rgb, classes=classes)
 
-                    if obj_dir in ['valve']:
-                        cntr += 1
-                        create_example_annotation(opt, id=cntr, filename=filename, images_dir=images_dir,
-                                                  annotations=train_annotations if mode == 'train' else valid_annotations,
-                                                  category_name=obj_dir, category_id=c, annotate_holes=True, dir_index=obj_dir_ctr, rgb=rgb)
+                    # if obj_dir in ['valve']:
+                    #     cntr += 1
+                    #     create_example_annotation(opt, id=cntr, filename=filename, images_dir=images_dir,
+                    #                               annotations=train_annotations if mode == 'train' else valid_annotations,
+                    #                               category_name=obj_dir, category_id=c, annotate_holes=True, dir_index=obj_dir_ctr, rgb=rgb, classes=classes)
             print('{}: Object {} conversion finished'.format(datetime.datetime.now(), obj_dir))
         break
     print('{}: Writing to files...'.format(datetime.datetime.now()))
